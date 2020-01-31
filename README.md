@@ -9,6 +9,7 @@ Back-office :
 3.	Implémenter le service qui alimente la base de données à partir des hashtags trouvés sur Twitter. 
 4.	Implémenter le web service qui lance une recherche d’un hashtag, dans la base locale et sur Twitter. (Ce service prend comme paramètre un hashtag et retourne une liste de Tweets). 
 5.	Implémenter le web service qui permet de récupérer le détail d’un hashtag. 
+
 Frontend : 
 
 1.	Implémenter l’IHM qui contient la liste des hashtags ainsi qu’une case pour recherche. 
