@@ -2,7 +2,7 @@ package com.wbo.TwitterManager.service;
 
 import com.wbo.TwitterManager.model.dto.TweetDto;
 import com.wbo.TwitterManager.model.entity.MyTweet;
-import com.wbo.TwitterManager.repo.TwitterRrepo;
+import com.wbo.TwitterManager.repo.TwitterRepo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,18 +25,18 @@ public class TwitterService {
     Environment env;
 
     @Autowired
-    TwitterRrepo twitterRrepo;
+    TwitterRepo twitterRrepo;
 
     public List<TweetDto> searchHashtag(String hashtag) {
         //chercher sur twiter
         List<Tweet> twitterList = searchTwiter(hashtag);
         //chercher en local
         List<MyTweet> localLit = searchLocal(hashtag);
-        //alculer la différence entre les 2 premier
+        //calculer la différence entre les 2
         List<MyTweet> diffList = diffLocalTwitter(twitterList, localLit);
-        //sauvgarder les nouveau éléments
+        //sauvgarder les nouveaux éléments
         saveTweets(diffList);
-        //claculer le résultat à rtourner
+        //claculer le résultat à retourner
         for (MyTweet myTweet : diffList) {
             localLit.add(myTweet);
         }
