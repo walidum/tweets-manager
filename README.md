@@ -30,3 +30,6 @@ http://zetcode.com/springboot/mongodbreactive/
 
 Reactive web api 
 https://medium.com/@axella.gerald/reactive-rest-api-using-spring-boot-rxjava-4efb620c69ac
+
+exemple spring-boot-mongodb-starter
+https://github.com/MaBeuLux88/java-spring-boot-mongodb-starter
