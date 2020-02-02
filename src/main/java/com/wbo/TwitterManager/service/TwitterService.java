@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
-import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,11 +22,13 @@ public class TwitterService {
     Environment env;
 
     @Autowired
+    TwitterProvider twitterProvider;
+    @Autowired
     TwitterRepo twitterRrepo;
 
     public List<TweetDto> searchHashtag(String hashtag) {
         //chercher sur twiter
-        List<Tweet> twitterList = searchTwiter(hashtag);
+        List<Tweet> twitterList = twitterProvider.searchTwiter(hashtag);
         //chercher en local
         List<MyTweet> localLit = searchLocal(hashtag);
         //calculer la différence entre les 2
@@ -44,18 +43,6 @@ public class TwitterService {
                 .map(t -> new TweetDto(t))
                 .collect(Collectors.toList());
         return toReturn;
-    }
-
-    private List<Tweet> searchTwiter(String hashtag) {
-        String consumerKey = env.getProperty("spring.social.twitter.consumerKey"); // The application's consumer key
-        String consumerSecret = env.getProperty("spring.social.twitter.consumerSecret"); // The application's consumer secret
-        String accessToken = env.getProperty("spring.social.twitter.app-id"); // The access token granted after OAuth authorization
-        String accessTokenSecret = env.getProperty("spring.social.twitter.app-secret");// The access token secret granted after OAuth authorization
-
-        Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-        SearchResults results = twitter.searchOperations().search("#" + hashtag, 20);
-
-        return results.getTweets();
     }
 
     private List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
