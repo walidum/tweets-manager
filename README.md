@@ -33,3 +33,6 @@ https://medium.com/@axella.gerald/reactive-rest-api-using-spring-boot-rxjava-4ef
 
 exemple spring-boot-mongodb-starter
 https://github.com/MaBeuLux88/java-spring-boot-mongodb-starter
+
+mongo db tuto
+http://zetcode.com/java/mongodb/
