@@ -5,6 +5,7 @@ import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -46,41 +47,48 @@ public class TwitterService {
     }
 
     private List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
-        if (myTweets != null && myTweets.size() > 0) {
-            List<Long> ids = myTweets.stream()
-                    .map(t -> t.getId())
-                    .collect(Collectors.toList());
-            List<Tweet> newList = new ArrayList<>();
-            for (Tweet t : tweets) {
-                if (!ids.contains(t.getId())) {
-                    newList.add(t);
-                }
+
+        List<Long> ids = myTweets.stream()
+                .map(t -> t.getId())
+                .collect(Collectors.toList());
+        List<Tweet> newList = new ArrayList<>();
+        for (Tweet t : tweets) {
+            if (!ids.contains(t.getId())) {
+                newList.add(t);
             }
-            List<MyTweet> toReturn = newList.stream()
-                    .map(t -> new MyTweet(t))
-                    .collect(Collectors.toList());
-            return toReturn;
         }
-        return new ArrayList<>();
+        List<MyTweet> toReturn = newList.stream()
+                .map(t -> new MyTweet(t))
+                .collect(Collectors.toList());
+        return toReturn;
     }
 
     private MyTweet saveTweet(MyTweet tweet) {
-        MyTweet res = twitterRrepo.save(tweet);
-        return res;
+//        MyTweet res = twitterRrepo.save(tweet);
+        return null;
     }
 
     //pour tester
     public List<TweetDto> getTweets() {
-        List<MyTweet> list = twitterRrepo.findAll();
-        if (list != null && list.size() > 0) {
-            return list.stream().map(t -> new TweetDto(t)).collect(Collectors.toList());
-        }
+//        List<MyTweet> list = twitterRrepo.findAll();
+//        if (list != null && list.size() > 0) {
+//            return list.stream().map(t -> new TweetDto(t)).collect(Collectors.toList());
+//        }
         return null;
     }
 
     private void saveTweets(List<MyTweet> tweets) {
         for (MyTweet tweet : tweets) {
             saveTweet(tweet);
+        }
+    }
+
+    public TweetDto getTweet(Long id) {
+        Optional<MyTweet> tweet = twitterRrepo.findById(id);
+        if (tweet.isPresent()) {
+            return new TweetDto(tweet.get());
+        } else {
+            return null;
         }
     }
 
