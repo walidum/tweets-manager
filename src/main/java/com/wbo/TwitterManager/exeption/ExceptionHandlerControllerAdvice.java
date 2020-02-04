@@ -23,7 +23,7 @@ public class ExceptionHandlerControllerAdvice {
         jsonResponse.setErrorMsg(exception.getMessage());
         jsonResponse.setErrorCode("404");
         jsonResponse.setStatus(JsonResponse.STATUS.FAILED.name());
-        return ResponseEntity.ok().body(jsonResponse);
+        return ResponseEntity.ok(jsonResponse);
     }
 
     @ExceptionHandler(ValidationExeption.class)
@@ -34,7 +34,7 @@ public class ExceptionHandlerControllerAdvice {
         jsonResponse.setErrorMsg(exception.getMessage());
         jsonResponse.setErrorCode("NOTVALID");
         jsonResponse.setStatus(JsonResponse.STATUS.FAILED.name());
-        return ResponseEntity.ok().body(jsonResponse);
+        return ResponseEntity.ok(jsonResponse);
     }
 
     @ExceptionHandler(Exception.class)
@@ -45,7 +45,7 @@ public class ExceptionHandlerControllerAdvice {
         jsonResponse.setErrorMsg(exception.getMessage());
         jsonResponse.setErrorCode("500");
         jsonResponse.setStatus(JsonResponse.STATUS.FAILED.name());
-        return ResponseEntity.ok().body(jsonResponse);
+        return ResponseEntity.ok(jsonResponse);
     }
 
 }
