@@ -35,9 +35,9 @@ public class TwitterController {
         List<TweetDto> data = twitterService.searchHashtag(hashtag);
         JsonResponse jsonResponse = new JsonResponse();
         if (data != null && !data.isEmpty()) {
-            jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
             jsonResponse.setData(data);
         }
+        jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
         return ResponseEntity.ok(jsonResponse);
     }
 
@@ -50,8 +50,8 @@ public class TwitterController {
         JsonResponse jsonResponse = new JsonResponse();
         if (data != null) {
             jsonResponse.setData(data);
-            jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
         }
+        jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
         return ResponseEntity.ok(jsonResponse);
     }
 
@@ -61,8 +61,8 @@ public class TwitterController {
         JsonResponse jsonResponse = new JsonResponse();
         if (data != null && !data.isEmpty()) {
             jsonResponse.setData(data);
-            jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
         }
+        jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
         return ResponseEntity.ok(jsonResponse);
     }
 

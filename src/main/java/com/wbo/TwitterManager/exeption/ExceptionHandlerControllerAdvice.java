@@ -26,26 +26,17 @@ public class ExceptionHandlerControllerAdvice {
         return ResponseEntity.ok(jsonResponse);
     }
 
-    @ExceptionHandler(ValidationExeption.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<JsonResponse> validationException(final Exception exception,
-            final HttpServletRequest request) {
-        JsonResponse jsonResponse = new JsonResponse();
-        jsonResponse.setErrorMsg(exception.getMessage());
-        jsonResponse.setErrorCode("NOTVALID");
-        jsonResponse.setStatus(JsonResponse.STATUS.FAILED.name());
-        return ResponseEntity.ok(jsonResponse);
-    }
-
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<JsonResponse> handleException(final Exception exception,
-            final HttpServletRequest request) {
+    public ResponseEntity<JsonResponse> handleException(final Exception exception, final HttpServletRequest request) {
         JsonResponse jsonResponse = new JsonResponse();
         jsonResponse.setErrorMsg(exception.getMessage());
-        jsonResponse.setErrorCode("500");
+        if (exception instanceof ValidationExeption) {
+            jsonResponse.setErrorCode("500");
+        } else {
+            jsonResponse.setErrorCode("NOTVALID");
+        }
         jsonResponse.setStatus(JsonResponse.STATUS.FAILED.name());
         return ResponseEntity.ok(jsonResponse);
     }
-
 }

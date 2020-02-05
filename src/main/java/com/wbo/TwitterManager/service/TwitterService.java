@@ -3,6 +3,7 @@ package com.wbo.TwitterManager.service;
 import com.wbo.TwitterManager.model.dto.TweetDto;
 import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
+import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,16 +65,16 @@ public class TwitterService {
     }
 
     private MyTweet saveTweet(MyTweet tweet) {
-//        MyTweet res = twitterRrepo.save(tweet);
-        return null;
+        MyTweet res = twitterRrepo.save(tweet);
+        return res;
     }
 
     //pour tester
     public List<TweetDto> getTweets() {
-//        List<MyTweet> list = twitterRrepo.findAll();
-//        if (list != null && list.size() > 0) {
-//            return list.stream().map(t -> new TweetDto(t)).collect(Collectors.toList());
-//        }
+        List<MyTweet> list = twitterRrepo.findAll();
+        if (list != null && list.size() > 0) {
+            return list.stream().map(t -> new TweetDto(t)).collect(Collectors.toList());
+        }
         return null;
     }
 
@@ -94,5 +95,16 @@ public class TwitterService {
 
     private List<MyTweet> searchLocal(String hashtag) {
         return twitterRrepo.findTweetsWithHashtag(hashtag);
+    }
+
+    public Observable<List<MyTweet>> getLocalListTweeterObservable(String hashtag) {
+        return Observable.create(s -> {
+            try {
+                s.onNext(searchLocal(hashtag));
+                s.onComplete();
+            } catch (Exception e) {
+                s.onError(e);
+            }
+        });
     }
 }

@@ -5,7 +5,10 @@
  */
 package com.wbo.TwitterManager.service;
 
+import com.wbo.TwitterManager.model.entity.MyTweet;
+import io.reactivex.Observable;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.social.twitter.api.SearchResults;
@@ -34,5 +37,16 @@ public class TwitterProvider {
         SearchResults results = twitter.searchOperations().search("#" + hashtag, 20);
 
         return results.getTweets();
+    }
+
+    public Observable<List<MyTweet>> getListTweeterObservable(String hashtag) {
+        return Observable.create(s -> {
+            try {
+                s.onNext(searchTwiter(hashtag).stream().map(a -> new MyTweet(a)).collect(Collectors.toList()));
+                s.onComplete();
+            } catch (Exception e) {
+                s.onError(e);
+            }
+        });
     }
 }
