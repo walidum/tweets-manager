@@ -5,6 +5,7 @@ import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
 import io.reactivex.Maybe;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,24 +33,31 @@ public class TwitterService {
         //chercher sur twiter
         Maybe<List<Tweet>> remote = twitterProvider.getListTweeterMaybe(hashtag);
         //chercher en local
-        Maybe<List<MyTweet>> local = getLocalListTweetsMaybe(hashtag);
+        MyTweet test = new MyTweet();
+        test.setId(21212313213L);
+        Maybe<List<MyTweet>> local = Maybe.just(Arrays.asList(test));
 
         Maybe<List<TweetDto>> res = Maybe.zip(remote, local, (remoteList, localList) -> {
+            //calculer la différence entre les 2
             List<MyTweet> differenceist = diffLocalTwitter(remoteList, localList);
+
+            List<MyTweet> toReturn = new ArrayList<>();
+
             for (MyTweet myTweet : differenceist) {
-                localList.add(myTweet);
-            }
-            return localList.stream()
-                    .map(t -> new TweetDto(t))
-                    .collect(Collectors.toList());
-        });
-        res.subscribe(l -> {
-            System.out.println("------------------------------");
-            for (TweetDto tweetDto : l) {
-                System.out.println(tweetDto.toString());
+                saveTweet(myTweet);
+                toReturn.add(myTweet);
             }
 
+            for (MyTweet myTweet : localList) {
+                toReturn.add(myTweet);
+            }
+
+            return toReturn.stream()
+                    .map(t -> new TweetDto(t))
+                    .collect(Collectors.toList());
+
         });
+
         List<TweetDto> toReturn = res.blockingGet();
         return toReturn;
     }

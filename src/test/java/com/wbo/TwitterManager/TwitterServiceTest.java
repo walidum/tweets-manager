@@ -1,11 +1,9 @@
 package com.wbo.TwitterManager;
 
-import com.wbo.TwitterManager.model.dto.TweetDto;
 import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
 import com.wbo.TwitterManager.service.TwitterProvider;
 import com.wbo.TwitterManager.service.TwitterService;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +48,7 @@ public class TwitterServiceTest {
 
     @Test
     public void listTweetDtoMastNotBeEmpty() {
-        List<TweetDto> list = twitterService.reactiveSearsh("#spring");
+//        List<TweetDto> list = twitterService.reactiveSearsh("#spring");
         //assertThat(list).isEmpty();
     }
 }
