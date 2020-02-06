@@ -36,3 +36,5 @@ https://github.com/MaBeuLux88/java-spring-boot-mongodb-starter
 
 mongo db tuto
 http://zetcode.com/java/mongodb/
+tweeter list 
+https://jsfiddle.net/solodev/t8vLor7w/
