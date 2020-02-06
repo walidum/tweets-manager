@@ -3,7 +3,7 @@ package com.wbo.TwitterManager.service;
 import com.wbo.TwitterManager.model.dto.TweetDto;
 import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,33 @@ public class TwitterService {
     @Autowired
     TwitterRepo twitterRrepo;
 
-    public List<TweetDto> searchHashtag(String hashtag) {
+    public List<TweetDto> reactiveSearsh(String hashtag) {
+        //chercher sur twiter
+        Maybe<List<Tweet>> remote = twitterProvider.getListTweeterMaybe(hashtag);
+        //chercher en local
+        Maybe<List<MyTweet>> local = getLocalListTweetsMaybe(hashtag);
+
+        Maybe<List<TweetDto>> res = Maybe.zip(remote, local, (remoteList, localList) -> {
+            List<MyTweet> differenceist = diffLocalTwitter(remoteList, localList);
+            for (MyTweet myTweet : differenceist) {
+                localList.add(myTweet);
+            }
+            return localList.stream()
+                    .map(t -> new TweetDto(t))
+                    .collect(Collectors.toList());
+        });
+        res.subscribe(l -> {
+            System.out.println("------------------------------");
+            for (TweetDto tweetDto : l) {
+                System.out.println(tweetDto.toString());
+            }
+
+        });
+        List<TweetDto> toReturn = res.blockingGet();
+        return toReturn;
+    }
+
+    public List<TweetDto> search(String hashtag) {
         //chercher sur twiter
         List<Tweet> twitterList = twitterProvider.searchTwiter(hashtag);
         //chercher en local
@@ -97,14 +123,19 @@ public class TwitterService {
         return twitterRrepo.findTweetsWithHashtag(hashtag);
     }
 
-    public Observable<List<MyTweet>> getLocalListTweeterObservable(String hashtag) {
-        return Observable.create(s -> {
+    public Maybe<List<MyTweet>> getLocalListTweetsMaybe(String hashtag) {
+        Maybe<List<MyTweet>> maybe = Maybe.create(emitter -> {
             try {
-                s.onNext(searchLocal(hashtag));
-                s.onComplete();
+                List<MyTweet> tweets = searchLocal(hashtag);
+                if (tweets != null && !tweets.isEmpty()) {
+                    emitter.onSuccess(tweets);
+                } else {
+                    emitter.onComplete();
+                }
             } catch (Exception e) {
-                s.onError(e);
+                emitter.onError(e);
             }
         });
+        return maybe;
     }
 }

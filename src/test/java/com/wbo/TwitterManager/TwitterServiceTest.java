@@ -50,7 +50,7 @@ public class TwitterServiceTest {
 
     @Test
     public void listTweetDtoMastNotBeEmpty() {
-        List<TweetDto> list = twitterService.searchHashtag("#spring");
-        //  assertThat(list).isEmpty();
+        List<TweetDto> list = twitterService.reactiveSearsh("#spring");
+        //assertThat(list).isEmpty();
     }
 }

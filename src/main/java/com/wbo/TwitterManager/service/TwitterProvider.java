@@ -1,10 +1,7 @@
-
 package com.wbo.TwitterManager.service;
 
-import com.wbo.TwitterManager.model.entity.MyTweet;
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.social.twitter.api.SearchResults;
@@ -35,14 +32,19 @@ public class TwitterProvider {
         return results.getTweets();
     }
 
-    public Observable<List<MyTweet>> getListTweeterObservable(String hashtag) {
-        return Observable.create(s -> {
+    public Maybe<List<Tweet>> getListTweeterMaybe(String hashtag) {
+        Maybe<List<Tweet>> maybe = Maybe.create(emitter -> {
             try {
-                s.onNext(searchTwiter(hashtag).stream().map(a -> new MyTweet(a)).collect(Collectors.toList()));
-                s.onComplete();
+                List<Tweet> tweets = searchTwiter(hashtag);
+                if (tweets != null && !tweets.isEmpty()) {
+                    emitter.onSuccess(tweets);
+                } else {
+                    emitter.onComplete();
+                }
             } catch (Exception e) {
-                s.onError(e);
+                emitter.onError(e);
             }
         });
+        return maybe;
     }
 }

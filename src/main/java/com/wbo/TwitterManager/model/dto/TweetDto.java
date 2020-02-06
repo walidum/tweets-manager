@@ -45,6 +45,11 @@ public class TweetDto {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "TweetDto{" + "id=" + id + ", idStr=" + idStr + ", text=" + text + ", createdAt=" + createdAt + ", fromUser=" + fromUser + ", languageCode=" + languageCode + ", source=" + source + '}';
+    }
+
     public String getIdStr() {
         return idStr;
     }

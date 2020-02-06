@@ -32,7 +32,7 @@ public class TwitterController {
         if (hashtag == null || hashtag.isEmpty()) {
             throw new ValidationException("Le champ hashtag est obligatoir !");
         }
-        List<TweetDto> data = twitterService.searchHashtag(hashtag);
+        List<TweetDto> data = twitterService.reactiveSearsh(hashtag);
         JsonResponse jsonResponse = new JsonResponse();
         if (data != null && !data.isEmpty()) {
             jsonResponse.setData(data);
