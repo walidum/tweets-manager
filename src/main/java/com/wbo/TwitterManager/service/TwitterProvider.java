@@ -2,6 +2,7 @@ package com.wbo.TwitterManager.service;
 
 import io.reactivex.Maybe;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.social.twitter.api.SearchResults;
@@ -32,12 +33,12 @@ public class TwitterProvider {
         return results.getTweets();
     }
 
-    public Maybe<List<Tweet>> getListTweeterMaybe(String hashtag) {
-        Maybe<List<Tweet>> maybe = Maybe.create(emitter -> {
+    public Maybe<Optional<List<Tweet>>> getListTweeterMaybe(String hashtag) {
+        Maybe<Optional<List<Tweet>>> maybe = Maybe.create(emitter -> {
             try {
                 List<Tweet> tweets = searchTwiter(hashtag);
                 if (tweets != null && !tweets.isEmpty()) {
-                    emitter.onSuccess(tweets);
+                    emitter.onSuccess(Optional.of(tweets));
                 } else {
                     emitter.onComplete();
                 }

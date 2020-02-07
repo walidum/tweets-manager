@@ -5,7 +5,6 @@ import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
 import io.reactivex.Maybe;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,18 +30,27 @@ public class TwitterService {
 
     public List<TweetDto> reactiveSearsh(String hashtag) {
         //chercher sur twiter
-        Maybe<List<Tweet>> remote = twitterProvider.getListTweeterMaybe(hashtag);
+        Maybe<Optional<List<Tweet>>> remote = twitterProvider.getListTweeterMaybe(hashtag)
+                .defaultIfEmpty(Optional.empty());
         //chercher en local
-        MyTweet test = new MyTweet();
-        test.setId(21212313213L);
-        Maybe<List<MyTweet>> local = Maybe.just(Arrays.asList(test));
+        Maybe<Optional<List<MyTweet>>> local = getLocalListTweetsMaybe(hashtag)
+                .defaultIfEmpty(Optional.empty());
 
-        Maybe<List<TweetDto>> res = Maybe.zip(remote, local, (remoteList, localList) -> {
-            //calculer la différence entre les 2
+        Maybe<List<TweetDto>> res = Maybe.zip(remote, local, (oRemoteList, oLocalList) -> {
+            List<Tweet> remoteList = new ArrayList<>();
+            List<MyTweet> localList = new ArrayList<>();
+            if (oRemoteList.isPresent()) {
+                remoteList = oRemoteList.get();
+            }
+            if (oLocalList.isPresent()) {
+                localList = oLocalList.get();
+            }
+            //calculer la différence entre les deux listes
             List<MyTweet> differenceist = diffLocalTwitter(remoteList, localList);
 
             List<MyTweet> toReturn = new ArrayList<>();
 
+            //sauvgarder les nouveaux tweets dans la base de données
             for (MyTweet myTweet : differenceist) {
                 saveTweet(myTweet);
                 toReturn.add(myTweet);
@@ -51,15 +59,13 @@ public class TwitterService {
             for (MyTweet myTweet : localList) {
                 toReturn.add(myTweet);
             }
-
+            //retourner une liste de dto
             return toReturn.stream()
                     .map(t -> new TweetDto(t))
                     .collect(Collectors.toList());
-
         });
 
-        List<TweetDto> toReturn = res.blockingGet();
-        return toReturn;
+        return res.blockingGet();
     }
 
     public List<TweetDto> search(String hashtag) {
@@ -131,12 +137,12 @@ public class TwitterService {
         return twitterRrepo.findTweetsWithHashtag(hashtag);
     }
 
-    public Maybe<List<MyTweet>> getLocalListTweetsMaybe(String hashtag) {
-        Maybe<List<MyTweet>> maybe = Maybe.create(emitter -> {
+    public Maybe<Optional<List<MyTweet>>> getLocalListTweetsMaybe(String hashtag) {
+        Maybe<Optional<List<MyTweet>>> maybe = Maybe.create(emitter -> {
             try {
                 List<MyTweet> tweets = searchLocal(hashtag);
                 if (tweets != null && !tweets.isEmpty()) {
-                    emitter.onSuccess(tweets);
+                    emitter.onSuccess(Optional.of(tweets));
                 } else {
                     emitter.onComplete();
                 }
