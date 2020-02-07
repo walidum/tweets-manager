@@ -4,13 +4,17 @@ import com.wbo.TwitterManager.model.entity.MyTweet;
 import com.wbo.TwitterManager.repo.TwitterRepo;
 import com.wbo.TwitterManager.service.TwitterProvider;
 import com.wbo.TwitterManager.service.TwitterService;
-import org.junit.Before;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.social.twitter.api.Tweet;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -40,15 +44,15 @@ public class TwitterServiceTest {
     @MockBean
     private TwitterRepo twitterRepo;
 
-    @Before
-    public void setUp() {
-        MyTweet tweet = new MyTweet();
-        tweet.setId(123L);
-    }
-
     @Test
-    public void listTweetDtoMastNotBeEmpty() {
-//        List<TweetDto> list = twitterService.reactiveSearsh("#spring");
-        //assertThat(list).isEmpty();
+    public void diffBetween2List() {
+        MyTweet tweet = new MyTweet();
+        Tweet tweet1 = new Tweet(0, "text", new Date(), "fromUser",
+                "profileImageUrl", Long.MIN_VALUE, 0, "languageCode", "source");
+        tweet.setId(123L);
+        List<Tweet> list1 = Arrays.asList(tweet1);
+        List<MyTweet> list2 = Arrays.asList(tweet);
+        List<MyTweet> list = twitterService.diffLocalTwitter(list1, list2);
+        assertThat(list).isNotEmpty();
     }
 }

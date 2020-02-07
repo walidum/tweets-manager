@@ -87,7 +87,7 @@ public class TwitterService {
         return toReturn;
     }
 
-    private List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
+    public List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
 
         List<Long> ids = myTweets.stream()
                 .map(t -> t.getId())
@@ -98,10 +98,9 @@ public class TwitterService {
                 newList.add(t);
             }
         }
-        List<MyTweet> toReturn = newList.stream()
+        return newList.stream()
                 .map(t -> new MyTweet(t))
                 .collect(Collectors.toList());
-        return toReturn;
     }
 
     private MyTweet saveTweet(MyTweet tweet) {
