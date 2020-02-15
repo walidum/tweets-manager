@@ -35,7 +35,9 @@ public class MyTweet implements Serializable {
         this.fromUser = tweet.getFromUser();
         this.text = tweet.getText();
         this.languageCode = tweet.getLanguageCode();
-        this.source = tweet.getSource();
+        if (tweet.getUser() != null) {
+            this.source = tweet.getUser().getProfileImageUrl();
+        }
     }
 
     public Long getId() {

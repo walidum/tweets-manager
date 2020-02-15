@@ -17,6 +17,7 @@ public class TweetDto {
     private String fromUser;
     private String languageCode;
     private String source;
+    private String url;
 
     public TweetDto() {
     }
@@ -27,7 +28,7 @@ public class TweetDto {
         this.fromUser = tweet.getFromUser();
         this.text = tweet.getText();
         this.languageCode = tweet.getLanguageCode();
-        this.source = tweet.getSource();
+        this.url = tweet.getSource();
     }
 
     public TweetDto(Tweet tweet) {
@@ -35,6 +36,10 @@ public class TweetDto {
         this.createdAt = tweet.getCreatedAt();
         this.fromUser = tweet.getFromUser();
         this.text = tweet.getText();
+        if (tweet.getUser() != null) {
+            this.url = tweet.getUser().getProfileImageUrl();
+        }
+
     }
 
     public long getId() {
@@ -80,6 +85,14 @@ public class TweetDto {
 
     public void setFromUser(String fromUser) {
         this.fromUser = fromUser;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

@@ -52,7 +52,7 @@ public class TwitterService {
 
             //sauvgarder les nouveaux tweets dans la base de données
             for (MyTweet myTweet : differenceist) {
-                saveTweet(myTweet);
+                myTweet = saveTweet(myTweet);
                 toReturn.add(myTweet);
             }
 
@@ -66,25 +66,6 @@ public class TwitterService {
         });
 
         return res.blockingGet();
-    }
-
-    public List<TweetDto> search(String hashtag) {
-        //chercher sur twiter
-        List<Tweet> twitterList = twitterProvider.searchTwiter(hashtag);
-        //chercher en local
-        List<MyTweet> localLit = searchLocal(hashtag);
-        //calculer la différence entre les 2
-        List<MyTweet> diffList = diffLocalTwitter(twitterList, localLit);
-        //sauvgarder les nouveaux éléments
-        saveTweets(diffList);
-        //claculer le résultat à retourner
-        for (MyTweet myTweet : diffList) {
-            localLit.add(myTweet);
-        }
-        List<TweetDto> toReturn = localLit.stream()
-                .map(t -> new TweetDto(t))
-                .collect(Collectors.toList());
-        return toReturn;
     }
 
     public List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
