@@ -114,7 +114,7 @@ public class TwitterService {
     }
 
     private List<MyTweet> searchLocal(String hashtag) {
-        return twitterRrepo.findTweetsWithHashtag(hashtag);
+        return twitterRrepo.findTweetsWithHashtag(".*" + hashtag + ".*");
     }
 
     public Maybe<Optional<List<MyTweet>>> getLocalListTweetsMaybe(String hashtag) {

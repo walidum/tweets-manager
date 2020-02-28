@@ -2,28 +2,21 @@ package com.wbo.TwitterManager.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.social.twitter.api.Tweet;
 
 /**
  *
  * @author b.walid
  */
-@Entity
+@Document
 public class MyTweet implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String idStr;
     private String text;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     private String fromUser;
     private String languageCode;

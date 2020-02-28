@@ -2,17 +2,25 @@ package com.wbo.TwitterManager.repo;
 
 import com.wbo.TwitterManager.model.entity.MyTweet;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 /**
  *
  * @author b.walid
  */
-public interface TwitterRepo extends JpaRepository<MyTweet, Long> {
+public interface TwitterRepo extends MongoRepository<MyTweet, Long> {
 
-    @Query("SELECT t FROM MyTweet t WHERE lower(t.text) LIKE lower(CONCAT('%', :hashtag,'%'))")
-    List<MyTweet> findTweetsWithHashtag(@Param("hashtag") String hashtag);
-
+    @Query("{'text': {$regex: ?0 }})")
+    List<MyTweet> findTweetsWithHashtag(String text);
 }
+//use admin
+//db.createUser(
+//  {
+//    user: "root",
+//    pwd: "root",
+//    roles: [ { role: "userAdminAnyDatabase", db: "admin" },
+//             { role: "dbAdminAnyDatabase", db: "admin" },
+//             { role: "readWriteAnyDatabase", db: "admin" } ]
+//  }
+//)
