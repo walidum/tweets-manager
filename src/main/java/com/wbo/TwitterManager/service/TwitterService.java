@@ -51,7 +51,10 @@ public class TwitterService {
             List<MyTweet> toReturn = new ArrayList<>();
 
             //sauvgarder les nouveaux tweets dans la base de données
+            long nextId = twitterRrepo.countTweets();
             for (MyTweet myTweet : differenceist) {
+                nextId++;
+                myTweet.setId(nextId);
                 myTweet = saveTweet(myTweet);
                 toReturn.add(myTweet);
             }
@@ -85,8 +88,7 @@ public class TwitterService {
     }
 
     private MyTweet saveTweet(MyTweet tweet) {
-        MyTweet res = twitterRrepo.save(tweet);
-        return res;
+        return twitterRrepo.save(tweet);
     }
 
     //pour tester
@@ -98,23 +100,17 @@ public class TwitterService {
         return null;
     }
 
-    private void saveTweets(List<MyTweet> tweets) {
-        for (MyTweet tweet : tweets) {
-            saveTweet(tweet);
-        }
-    }
-
     public TweetDto getTweet(Long id) {
-        Optional<MyTweet> tweet = twitterRrepo.findById(id);
-        if (tweet.isPresent()) {
-            return new TweetDto(tweet.get());
+        MyTweet tweet = twitterRrepo.findTweetById(id);
+        if (tweet != null) {
+            return new TweetDto(tweet);
         } else {
             return null;
         }
     }
 
     private List<MyTweet> searchLocal(String hashtag) {
-        return twitterRrepo.findTweetsWithHashtag(".*" + hashtag + ".*");
+        return twitterRrepo.findTweetsWithHashtag(hashtag);
     }
 
     public Maybe<Optional<List<MyTweet>>> getLocalListTweetsMaybe(String hashtag) {
