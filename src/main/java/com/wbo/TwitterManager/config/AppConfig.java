@@ -7,8 +7,10 @@ package com.wbo.TwitterManager.config;
 
 import com.mongodb.MongoClient;
 import java.rmi.UnknownHostException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,9 +23,12 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 @Configuration
 public class AppConfig {
 
+    @Autowired
+    Environment env;
+
     @Bean
     public MongoDbFactory mongoDbFactory() throws UnknownHostException {
-        return new SimpleMongoDbFactory(new MongoClient("localhost", 27017), "test");
+        return new SimpleMongoDbFactory(new MongoClient(env.getProperty("spring.data.mongodb.host"), env.getProperty("spring.data.mongodb.port", Integer.class)), env.getProperty("spring.data.mongodb.database"));
     }
 
     @Bean
