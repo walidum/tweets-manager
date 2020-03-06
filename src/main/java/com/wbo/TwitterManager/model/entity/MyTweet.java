@@ -66,7 +66,7 @@ public class MyTweet implements Serializable {
 
     @Override
     public String toString() {
-        return "com.wbo.TwitterManager.model.entity.Tweet[ id=" + id + " ]";
+        return "MyTweet{" + "id=" + id + ", idStr=" + idStr + ", text=" + text + ", createdAt=" + createdAt + ", fromUser=" + fromUser + ", languageCode=" + languageCode + ", source=" + source + '}';
     }
 
     public String getIdStr() {

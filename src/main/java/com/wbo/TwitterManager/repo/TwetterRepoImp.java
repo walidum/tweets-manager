@@ -51,6 +51,16 @@ public class TwetterRepoImp implements TwitterRepo {
         return mongoOperations.count(new Query(), MyTweet.class);
     }
 
+    @Override
+    public boolean delete(MyTweet mt) {
+        try {
+            mongoOperations.remove(mt);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }
 //https://stackoverflow.com/questions/41746370/spring-data-mongo-case-insensitive-like-query
 //https://stackoverflow.com/questions/47217900/spring-boot-mongodb-search-by-id-returns-null

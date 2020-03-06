@@ -13,6 +13,8 @@ public interface TwitterRepo {
 
     MyTweet findTweetById(Long id);
 
+    boolean delete(MyTweet mt);
+
     MyTweet save(MyTweet myTweet);
 
     List<MyTweet> findAll();
