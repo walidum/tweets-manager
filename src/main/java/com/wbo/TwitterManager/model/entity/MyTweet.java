@@ -14,7 +14,7 @@ import org.springframework.social.twitter.api.Tweet;
 public class MyTweet implements Serializable {
 
     @Id
-    private Long id;
+    private String id;
     private String idStr;
     private String text;
     private Date createdAt;
@@ -26,7 +26,7 @@ public class MyTweet implements Serializable {
     }
 
     public MyTweet(Tweet tweet) {
-        this.id = tweet.getId();
+        this.id = "" + tweet.getId();
         this.createdAt = tweet.getCreatedAt();
         this.fromUser = tweet.getFromUser();
         this.text = tweet.getText();
@@ -36,11 +36,11 @@ public class MyTweet implements Serializable {
         }
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

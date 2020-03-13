@@ -23,7 +23,7 @@ public class RepTests {
     @Before
     public void setUp() {
         MyTweet mt = new MyTweet();
-        long id = 9999;
+        String id = "9999";
         mt.setId(id);
 
         Mockito.when(twitterRepo.findTweetById(id))
@@ -32,7 +32,7 @@ public class RepTests {
 
     @Test
     public void whenValidIdTweetShouldBeFound() {
-        long id = 9999;
+        String id = "9999";
         //find the tweet and chek if the result is not null
         MyTweet tweet = twitterRepo.findTweetById(id);
         assertThat(tweet.getId()).isEqualTo(id);

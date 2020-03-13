@@ -48,10 +48,8 @@ public class TwitterService {
             List<MyTweet> differenceList = diffLocalTwitter(remoteList, localList);
 
             //sauvgarder les nouveaux tweets dans la base de données
-            long nextId = twitterRrepo.maxIds();
             for (MyTweet myTweet : differenceList) {
-                nextId++;
-                saveTweet(myTweet, nextId);
+                twitterRrepo.save(myTweet);
             }
 
             //préparer le résultat.
@@ -68,20 +66,15 @@ public class TwitterService {
 
     public List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
 
-        List<Long> ids = myTweets.stream()
+        List<String> ids = myTweets.stream()
                 .map(t -> t.getId())
                 .collect(Collectors.toList());
 
         return tweets.stream()
-                .filter(t -> !ids.contains(t.getId()))
+                .filter(t -> !ids.contains(t.getId() + ""))
                 .map(t -> new MyTweet(t))
                 .collect(Collectors.toList());
 
-    }
-
-    private MyTweet saveTweet(MyTweet tweet, long id) {
-        tweet.setId(id);
-        return twitterRrepo.save(tweet);
     }
 
     //pour tester
@@ -96,7 +89,7 @@ public class TwitterService {
                 .collect(Collectors.toList());
     }
 
-    public TweetDto getTweet(Long id) {
+    public TweetDto getTweet(String id) {
         MyTweet tweet = twitterRrepo.findTweetById(id);
 
         if (tweet == null) {

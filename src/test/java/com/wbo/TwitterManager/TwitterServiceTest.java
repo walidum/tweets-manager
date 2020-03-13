@@ -49,7 +49,7 @@ public class TwitterServiceTest {
         MyTweet tweet = new MyTweet();
         Tweet tweet1 = new Tweet(0, "text", new Date(), "fromUser",
                 "profileImageUrl", Long.MIN_VALUE, 0, "languageCode", "source");
-        tweet.setId(123L);
+        tweet.setId("123");
         List<Tweet> list1 = Arrays.asList(tweet1);
         List<MyTweet> list2 = Arrays.asList(tweet);
         List<MyTweet> list = twitterService.diffLocalTwitter(list1, list2);

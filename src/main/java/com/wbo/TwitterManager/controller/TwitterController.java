@@ -44,7 +44,7 @@ public class TwitterController {
     }
 
     @GetMapping("/get/tweet/{id}")
-    public ResponseEntity<JsonResponse> getTweet(@PathVariable("id") Long id) throws ValidationException {
+    public ResponseEntity<JsonResponse> getTweet(@PathVariable("id") String id) throws ValidationException {
         if (id == null) {
             throw new ValidationException("Le champ id est obligatoir !");
         }

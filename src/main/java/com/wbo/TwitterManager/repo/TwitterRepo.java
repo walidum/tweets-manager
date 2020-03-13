@@ -11,7 +11,7 @@ public interface TwitterRepo {
 
     List<MyTweet> findTweetsWithHashtag(String text);
 
-    MyTweet findTweetById(Long id);
+    MyTweet findTweetById(String id);
 
     boolean delete(MyTweet mt);
 
@@ -19,5 +19,5 @@ public interface TwitterRepo {
 
     List<MyTweet> findAll();
 
-    long maxIds();
+    void removeAll();
 }

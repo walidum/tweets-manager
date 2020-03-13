@@ -4,7 +4,6 @@ import com.wbo.TwitterManager.model.entity.MyTweet;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -27,7 +26,7 @@ public class TwetterRepoImp implements TwitterRepo {
     }
 
     @Override
-    public MyTweet findTweetById(Long id) {
+    public MyTweet findTweetById(String id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").is(id));
         return mongoOperations.findOne(query, MyTweet.class);
@@ -48,15 +47,11 @@ public class TwetterRepoImp implements TwitterRepo {
     }
 
     @Override
-    public long maxIds() {
-        Query query = new Query();
-        query.with(new Sort(Sort.Direction.DESC, "id"));
-        query.limit(1);
-        MyTweet max = mongoOperations.findOne(query, MyTweet.class);
-        if (max == null) {
-            return -1;
+    public void removeAll() {
+        List<MyTweet> list = mongoOperations.findAll(MyTweet.class);
+        for (MyTweet myTweet : list) {
+            mongoOperations.remove(myTweet);
         }
-        return max.getId();
     }
 
     @Override
