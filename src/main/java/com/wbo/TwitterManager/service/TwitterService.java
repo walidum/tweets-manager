@@ -45,12 +45,7 @@ public class TwitterService {
                 localList = oLocalList.get();
             }
             //calculer la différence entre les deux listes
-            List<MyTweet> differenceList = diffLocalTwitter(remoteList, localList);
-
-            //sauvgarder les nouveaux tweets dans la base de données
-            for (MyTweet myTweet : differenceList) {
-                twitterRrepo.save(myTweet);
-            }
+            List<MyTweet> differenceList = getAndSaveNewTweets(remoteList);
 
             //préparer le résultat.
             List<MyTweet> toReturn = new ArrayList<>(differenceList);
@@ -64,17 +59,18 @@ public class TwitterService {
         return res.blockingGet();
     }
 
-    public List<MyTweet> diffLocalTwitter(List<Tweet> tweets, List<MyTweet> myTweets) {
+    public List<MyTweet> getAndSaveNewTweets(List<Tweet> tweets) {
 
-        List<String> ids = myTweets.stream()
-                .map(t -> t.getId())
-                .collect(Collectors.toList());
-
-        return tweets.stream()
-                .filter(t -> !ids.contains(t.getId() + ""))
-                .map(t -> new MyTweet(t))
-                .collect(Collectors.toList());
-
+        List<MyTweet> toReturn = new ArrayList<>();
+        for (Tweet tweet : tweets) {
+            MyTweet t = twitterRrepo.findTweetById(tweet.getId() + "");
+            if (t == null) {
+                MyTweet toSave = new MyTweet(tweet);
+                twitterRrepo.save(toSave);
+                toReturn.add(toSave);
+            }
+        }
+        return toReturn;
     }
 
     //pour tester
@@ -87,6 +83,11 @@ public class TwitterService {
         return list.stream()
                 .map(t -> new TweetDto(t))
                 .collect(Collectors.toList());
+    }
+
+    //pour tester
+    public void removeAllTweets() {
+        twitterRrepo.removeAll();
     }
 
     public TweetDto getTweet(String id) {

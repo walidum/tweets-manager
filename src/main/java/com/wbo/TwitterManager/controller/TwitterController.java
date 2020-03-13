@@ -68,4 +68,13 @@ public class TwitterController {
         return ResponseEntity.ok(jsonResponse);
     }
 
+    @GetMapping("/removeAll")
+    public ResponseEntity<JsonResponse> removeAllTweets() {
+        twitterService.removeAllTweets();
+        JsonResponse jsonResponse = new JsonResponse();
+        jsonResponse.setData("OK");
+        jsonResponse.setStatus(JsonResponse.STATUS.SUCCESS.name());
+        return ResponseEntity.ok(jsonResponse);
+    }
+
 }
