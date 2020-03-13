@@ -45,11 +45,11 @@ public class TwitterService {
                 localList = oLocalList.get();
             }
             //calculer la différence entre les deux listes
-            List<MyTweet> differenceList = getAndSaveNewTweets(remoteList);
+            List<MyTweet> differenceList = CamputeDifference(remoteList, localList);
 
             //préparer le résultat.
-            List<MyTweet> toReturn = new ArrayList<>(differenceList);
-            toReturn.addAll(localList);
+            List<MyTweet> toReturn = new ArrayList<>(localList);
+            toReturn.addAll(differenceList);
 
             //retourner une liste de dto
             return toReturn.stream()
@@ -59,12 +59,15 @@ public class TwitterService {
         return res.blockingGet();
     }
 
-    public List<MyTweet> getAndSaveNewTweets(List<Tweet> tweets) {
+    public List<MyTweet> CamputeDifference(List<Tweet> remoteList, List<MyTweet> localList) {
 
         List<MyTweet> toReturn = new ArrayList<>();
-        for (Tweet tweet : tweets) {
-            MyTweet t = twitterRrepo.findTweetById(tweet.getId() + "");
-            if (t == null) {
+        for (Tweet tweet : remoteList) {
+            boolean b = localList.stream()
+                    .filter(t -> t.getId().equals(tweet.getId() + ""))
+                    .findFirst()
+                    .isPresent();
+            if (!b) {
                 MyTweet toSave = new MyTweet(tweet);
                 twitterRrepo.save(toSave);
                 toReturn.add(toSave);

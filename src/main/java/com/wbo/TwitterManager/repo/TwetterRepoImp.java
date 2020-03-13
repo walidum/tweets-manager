@@ -48,10 +48,8 @@ public class TwetterRepoImp implements TwitterRepo {
 
     @Override
     public void removeAll() {
-        List<MyTweet> list = mongoOperations.findAll(MyTweet.class);
-        for (MyTweet myTweet : list) {
-            mongoOperations.remove(myTweet);
-        }
+        mongoOperations.dropCollection(MyTweet.class);
+        mongoOperations.createCollection(MyTweet.class);
     }
 
     @Override
