@@ -22,7 +22,6 @@ public class TwitterService {
 
     @Autowired
     Environment env;
-
     @Autowired
     TwitterProvider twitterProvider;
     @Autowired
@@ -46,28 +45,24 @@ public class TwitterService {
                 localList = oLocalList.get();
             }
             //calculer la différence entre les deux listes
-            List<MyTweet> differenceist = diffLocalTwitter(remoteList, localList);
-
-            List<MyTweet> toReturn = new ArrayList<>();
+            List<MyTweet> differenceList = diffLocalTwitter(remoteList, localList);
 
             //sauvgarder les nouveaux tweets dans la base de données
-            long nextId = twitterRrepo.countTweets();
-            for (MyTweet myTweet : differenceist) {
+            long nextId = twitterRrepo.maxIds();
+            for (MyTweet myTweet : differenceList) {
                 nextId++;
-                myTweet.setId(nextId);
-                myTweet = saveTweet(myTweet);
-                toReturn.add(myTweet);
+                saveTweet(myTweet, nextId);
             }
 
-            for (MyTweet myTweet : localList) {
-                toReturn.add(myTweet);
-            }
+            //préparer le résultat.
+            List<MyTweet> toReturn = new ArrayList<>(differenceList);
+            toReturn.addAll(localList);
+
             //retourner une liste de dto
             return toReturn.stream()
                     .map(t -> new TweetDto(t))
                     .collect(Collectors.toList());
         });
-
         return res.blockingGet();
     }
 
@@ -76,37 +71,38 @@ public class TwitterService {
         List<Long> ids = myTweets.stream()
                 .map(t -> t.getId())
                 .collect(Collectors.toList());
-        List<Tweet> newList = new ArrayList<>();
-        for (Tweet t : tweets) {
-            if (!ids.contains(t.getId())) {
-                newList.add(t);
-            }
-        }
-        return newList.stream()
+
+        return tweets.stream()
+                .filter(t -> !ids.contains(t.getId()))
                 .map(t -> new MyTweet(t))
                 .collect(Collectors.toList());
+
     }
 
-    private MyTweet saveTweet(MyTweet tweet) {
+    private MyTweet saveTweet(MyTweet tweet, long id) {
+        tweet.setId(id);
         return twitterRrepo.save(tweet);
     }
 
     //pour tester
     public List<TweetDto> getTweets() {
         List<MyTweet> list = twitterRrepo.findAll();
-        if (list != null && list.size() > 0) {
-            return list.stream().map(t -> new TweetDto(t)).collect(Collectors.toList());
+
+        if (list == null && list.isEmpty()) {
+            return null;
         }
-        return null;
+        return list.stream()
+                .map(t -> new TweetDto(t))
+                .collect(Collectors.toList());
     }
 
     public TweetDto getTweet(Long id) {
         MyTweet tweet = twitterRrepo.findTweetById(id);
-        if (tweet != null) {
-            return new TweetDto(tweet);
-        } else {
+
+        if (tweet == null) {
             return null;
         }
+        return new TweetDto(tweet);
     }
 
     private List<MyTweet> searchLocal(String hashtag) {
@@ -114,18 +110,18 @@ public class TwitterService {
     }
 
     public Maybe<Optional<List<MyTweet>>> getLocalListTweetsMaybe(String hashtag) {
-        Maybe<Optional<List<MyTweet>>> maybe = Maybe.create(emitter -> {
-            try {
-                List<MyTweet> tweets = searchLocal(hashtag);
-                if (tweets != null && !tweets.isEmpty()) {
-                    emitter.onSuccess(Optional.of(tweets));
-                } else {
-                    emitter.onComplete();
-                }
-            } catch (Exception e) {
-                emitter.onError(e);
-            }
-        });
-        return maybe;
+        return Maybe
+                .create(emitter -> {
+                    try {
+                        List<MyTweet> tweets = searchLocal(hashtag);
+                        if (tweets != null && !tweets.isEmpty()) {
+                            emitter.onSuccess(Optional.of(tweets));
+                        } else {
+                            emitter.onComplete();
+                        }
+                    } catch (Exception e) {
+                        emitter.onError(e);
+                    }
+                });
     }
 }

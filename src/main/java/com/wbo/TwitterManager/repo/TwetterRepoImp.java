@@ -4,6 +4,7 @@ import com.wbo.TwitterManager.model.entity.MyTweet;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -47,8 +48,15 @@ public class TwetterRepoImp implements TwitterRepo {
     }
 
     @Override
-    public long countTweets() {
-        return mongoOperations.count(new Query(), MyTweet.class);
+    public long maxIds() {
+        Query query = new Query();
+        query.with(new Sort(Sort.Direction.DESC, "id"));
+        query.limit(1);
+        MyTweet max = mongoOperations.findOne(query, MyTweet.class);
+        if (max == null) {
+            return -1;
+        }
+        return max.getId();
     }
 
     @Override
@@ -60,7 +68,4 @@ public class TwetterRepoImp implements TwitterRepo {
             return false;
         }
     }
-
 }
-//https://stackoverflow.com/questions/41746370/spring-data-mongo-case-insensitive-like-query
-//https://stackoverflow.com/questions/47217900/spring-boot-mongodb-search-by-id-returns-null

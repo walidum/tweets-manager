@@ -19,5 +19,5 @@ public interface TwitterRepo {
 
     List<MyTweet> findAll();
 
-    long countTweets();
+    long maxIds();
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.wbo.TwitterManager.config;
 
 import com.mongodb.MongoClient;
@@ -28,7 +23,10 @@ public class AppConfig {
 
     @Bean
     public MongoDbFactory mongoDbFactory() throws UnknownHostException {
-        return new SimpleMongoDbFactory(new MongoClient(env.getProperty("spring.data.mongodb.host"), env.getProperty("spring.data.mongodb.port", Integer.class)), env.getProperty("spring.data.mongodb.database"));
+        return new SimpleMongoDbFactory(new MongoClient(
+                env.getProperty("spring.data.mongodb.host", "localhost"),
+                env.getProperty("spring.data.mongodb.port", Integer.class, 27017)),
+                env.getProperty("spring.data.mongodb.database", "test"));
     }
 
     @Bean
