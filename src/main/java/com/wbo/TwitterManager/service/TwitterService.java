@@ -47,6 +47,10 @@ public class TwitterService {
             //calculer la différence entre les deux listes
             List<MyTweet> differenceList = CamputeDifference(remoteList, localList);
 
+            //ssave the new tweets in the db.
+            for (MyTweet myTweet : differenceList) {
+                twitterRrepo.save(myTweet);
+            }
             //préparer le résultat.
             List<MyTweet> toReturn = new ArrayList<>(localList);
             toReturn.addAll(differenceList);
@@ -68,9 +72,7 @@ public class TwitterService {
                     .findFirst()
                     .isPresent();
             if (!b) {
-                MyTweet toSave = new MyTweet(tweet);
-                twitterRrepo.save(toSave);
-                toReturn.add(toSave);
+                toReturn.add(new MyTweet(tweet));
             }
         }
         return toReturn;

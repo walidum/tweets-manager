@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
@@ -38,7 +39,10 @@ public class TwitterProvider {
             hashtag = "#" + hashtag;
         }
         Integer nb_max = env.getProperty("twitter.nb.max.tweets", Integer.class, 20);
-        SearchResults results = twitter.searchOperations().search(hashtag, nb_max);
+        SearchParameters params = new SearchParameters(hashtag)
+                .resultType(SearchParameters.ResultType.RECENT)
+                .count(nb_max);
+        SearchResults results = twitter.searchOperations().search(params);
         return results.getTweets();
     }
 
