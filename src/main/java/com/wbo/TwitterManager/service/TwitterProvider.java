@@ -27,6 +27,8 @@ public class TwitterProvider {
         if (hashtag == null || hashtag.isEmpty()) {
             return new ArrayList<>();
         }
+
+        //region on a besoin de ces lignes pour chaque requete ?
         //twitter app
         String consumerKey = env.getProperty("spring.social.twitter.consumerKey", ""); // The application's consumer key
         String consumerSecret = env.getProperty("spring.social.twitter.consumerSecret", ""); // The application's consumer secret
@@ -39,6 +41,8 @@ public class TwitterProvider {
             hashtag = "#" + hashtag;
         }
         Integer nb_max = env.getProperty("twitter.nb.max.tweets", Integer.class, 20);
+        //endregion
+
         SearchParameters params = new SearchParameters(hashtag)
                 .resultType(SearchParameters.ResultType.RECENT)
                 .count(nb_max);
