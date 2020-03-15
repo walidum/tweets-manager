@@ -50,7 +50,9 @@ public class TwitterProvider {
         return results.getTweets();
     }
 
+    //
     public Maybe<Optional<List<Tweet>>> getListTweeterMaybe(String hashtag) {
+        //
         return Maybe
                 .create(emitter -> {
                     try {
@@ -64,5 +66,6 @@ public class TwitterProvider {
                         emitter.onError(e);
                     }
                 });
+        //
     }
 }
